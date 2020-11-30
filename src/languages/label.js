@@ -28,6 +28,10 @@ export var labels={
         en:"Logout",
         bn:"লগআউট"
     },
+    label_register:{
+        en:"Register",
+        bn:"নিবন্ধন"
+    },
 
 
     label_registered_user:{

@@ -2,7 +2,7 @@
     <a-layout-header :style="{ background: '#fff'}" :class="'d-print-none'">
         <div :style="{float:'right'}">
             <img :src="$system_variables.user.profile_picture" v-if="$system_variables.user.profile_picture" alt="profileImage" class="rounded-circle" :style="{height:'32px',width:'32px'}">
-            <img :src="'/images/logo.png'" v-else alt="Image" class="rounded-circle" :style="{height:'32px',width:'32px'}">
+            <img :src="'/images/profile.jpg'" v-else alt="Image" class="rounded-circle" :style="{height:'32px',width:'32px'}">
             <a-dropdown :trigger="['click']" :style="{float:'right'}">
                 <a class="ant-dropdown-link" @click.prevent>
                  <a-icon type="down" />
@@ -10,6 +10,9 @@
                 <a-menu slot="overlay">
                 <a-menu-item >{{$system_functions.get_label('label_welcome')}} {{$system_variables.user.name}}</a-menu-item >                
                 <a-menu-item v-if="$system_variables.user.id > 0" @click="$system_variables.logout">{{$system_functions.get_label('label_logout')}}</a-menu-item>
+                <a-menu-item v-if="$system_variables.user.id == 0"> <router-link to="/login">{{$system_functions.get_label('label_login')}}</router-link></a-menu-item> 
+                <a-menu-item v-if="$system_variables.user.id == 0"> <router-link to="/register">{{$system_functions.get_label('label_register')}}</router-link></a-menu-item> 
+                
             </a-menu>                
             </a-dropdown>
         </div>
