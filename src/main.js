@@ -14,6 +14,7 @@ Vue.use(Antd);
 import axios from 'axios'
 Vue.prototype.$axios=axios
 axios.defaults.baseURL = 'http://localhost/api';
+axios.defaults.headers.common['Authorization'] = 'Bearer '+Vue.prototype.$system_variables.user.api_token;
 
 Vue.config.productionTip = false
 

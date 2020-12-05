@@ -43,9 +43,41 @@ export default {
   methods: {    
     init: function()
     {
-      this.status_site_loaded=1;      
-      this.$system_variables.status_data_loaded=1;  
-      
+      this.status_site_loaded=0;      
+      this.$system_variables.status_data_loaded=0;        
+      this.$axios.get('user/initialize',{params:{language:this.$system_variables.language}})
+        .then(response=>{                        
+            this.$system_variables.status_data_loaded = 1;
+            if(response.data.errorStr == '')
+            {
+              if(response.data.user)
+              {
+                this.$system_functions.set_user(response.data.user);
+              }
+            }
+            else
+            {
+                this.alert_message = response.data.errorStr;
+                this.alert_type = 'error';
+            }
+            this.$system_variables.status_data_loaded = 1;
+            this.status_site_loaded=1;
+        })
+        .catch(error => {
+            //console.log(error.response);
+            this.alert_type = 'error';
+            
+            if(error.response && error.response.data && error.response.data.errorStr)
+            {
+                this.$system_functions.responseErrorTask(error.response.data.errorStr);
+            }
+            else
+            {
+                this.alert_message = this.$system_functions.get_msg_response_error();
+            }
+            this.$system_variables.status_data_loaded = 1;
+            this.status_site_loaded=1;
+        });
     },
     
   },
