@@ -7,7 +7,7 @@ function initial_data()
   return {   
     language:language,
     user:{
-      token_auth:localStorage.getItem('token_auth')? localStorage.getItem('token_auth'):'',
+      api_token:localStorage.getItem('api_token')? localStorage.getItem('api_token'):'',
       token_csrf:localStorage.getItem('token_csrf')? localStorage.getItem('token_csrf'):'',
       token_device:localStorage.getItem('token_device')? localStorage.getItem('token_device'):'',
       id: 0,

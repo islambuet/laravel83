@@ -82,12 +82,12 @@ var system_functions= new Vue(
                   '<p>'+this.get_label('msg_response_error_body')+'</p>'+
                   '<p>'+this.get_label('msg_contact_with_admin')+'</p>';                    
         },
-        response_error_task: function(response)
+        responseErrorTask: function(errorStr)
         {
-            if(response.data.error_type=='SITE_OFF_LINE'){
+            if(errorStr=='SITE_OFF_LINE'){
                 this.$system_variables.status_task_loaded=-3;
             } 
-            else if(response.data.error_type=='UNAUTHORIZED'){
+            else if(errorStr=='UNAUTHORIZED'){
                 this.$system_variables.status_task_loaded=-2;
             }            
             else {
