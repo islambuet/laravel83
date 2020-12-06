@@ -13,7 +13,7 @@
               <a-input name='email' v-model="loginInputs.email" autocomplete="off" />
             </a-form-model-item>
             <a-form-model-item has-feedback :label="$system_functions.get_label_task('label_password')">
-                <a-input name='password' v-model="loginInputs.password" type="password" autocomplete="off" />
+                <a-input-password name='password' v-model="loginInputs.password" type="password" autocomplete="off" />
             </a-form-model-item>
             <a-form-model-item :wrapper-col="{offset: 18 }">
                 <a-button type="primary" @click="login">
