@@ -16,7 +16,7 @@ function initial_data()
       info:{},
       tasks:[]
     },
-    visitors:{
+    visitor:{
       tasks:[]
     }, 
     status_task_loaded:0,    //Loading=0,success=1,failed=-1,acceesdenied=-2,siteoffline=-3  for all page
@@ -35,8 +35,16 @@ var system_variables= new Vue(
       },
       methods:{
         logout: function(){
-          localStorage.setItem('token_auth','');
-          localStorage.setItem('token_csrf','');
+          this.$axios.get('user/logout')
+        .then(response=>{                        
+            
+        })
+        .catch(error => {
+            
+        });
+          localStorage.setItem('api_token','');
+          this.$axios.defaults.headers.common['Authorization'] = '';
+          //localStorage.setItem('token_csrf','');
           this.user=initial_data().user;
           if(router.history.current.path!= '/')
           {

@@ -75,6 +75,7 @@ export default {
                         {
                             localStorage.setItem('api_token', response.data.user.api_token);                            
                             this.$system_functions.set_user(response.data.user);
+                            this.$system_functions.setAxiosHeader();
                             this.$router.push("/");
                         }
                         else

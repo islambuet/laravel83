@@ -38,6 +38,7 @@ export default {
   {
     this.$system_functions.load_languages();
     this.$system_functions.set_page_title(this.$system_functions.get_label('label_site_title'));
+    this.$system_functions.setAxiosHeader();
     this.init();
   },
   methods: {    
@@ -53,6 +54,10 @@ export default {
               if(response.data.user)
               {
                 this.$system_functions.set_user(response.data.user);
+              }
+              if(response.data.visitor)
+              {
+                this.$system_variables.visitor.tasks=response.data.visitor.tasks;
               }
             }
             else

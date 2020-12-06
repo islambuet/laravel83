@@ -52,6 +52,19 @@ var system_functions= new Vue(
             }
           
         },
+        setAxiosHeader:function()
+        {
+            if(this.$system_variables.user.api_token)
+            {
+                this.$axios.defaults.headers.common['Authorization'] = 'Bearer '+this.$system_variables.user.api_token;            
+            }
+            else
+            {
+                this.$axios.defaults.headers.common['Authorization'] = '';
+            }
+            
+            
+        },
         get_label(key){        
             return this.$system_variables.labels[key]?this.$system_variables.labels[key]:key;
         },
