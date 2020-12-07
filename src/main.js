@@ -14,6 +14,7 @@ Vue.use(Antd);
 import axios from 'axios'
 Vue.prototype.$axios=axios
 axios.defaults.baseURL = 'http://localhost/api';
+//axios.defaults.baseURL = 'https://laravel.shaiful.me/api';
 axios.defaults.headers.common['Accept'] = 'application/json';
 
 Vue.config.productionTip = false

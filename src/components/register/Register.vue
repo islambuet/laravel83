@@ -55,9 +55,9 @@ export default {
             registerInputRules: {
                 name_en: [{ required: true, message: "Name (English) Requied)", trigger: 'blur' }],
                 name_bn: [{ required: true, message: "Name(Bangla) Required", trigger: 'blur' }],
-                mobile_no: [{ required: true, message: "Mobile No Required", trigger: 'blur' }],
-                email: [{ required: true, message: this.$system_functions.get_label_task('msg_email_require'), trigger: 'blur' }],
-                password: [{ required: true, message: "Pssword Required", trigger: 'blur' }],
+                mobile_no: [{ required: true, message: "Mobile No Required", trigger: 'blur' },{ len: 11, message: "Mobile no must be 11 digit" },],
+                email: [{ required: true, message: this.$system_functions.get_label_task('msg_email_require')},{ type: 'email', message: "Enter Valid Email address"}],
+                password: [{ required: true, message: "Pssword Required"},{ min: 8, message: "Password must be minimum 8 characters" },],
             }
 
             // form_title: 'Fill out the form below to login.',
