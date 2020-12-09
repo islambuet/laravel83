@@ -111,6 +111,8 @@ export default {
     .d-print-none{
       display:none!important
     }
+    .hasactionColumnFirst table td:first-child {display:none}
+    .hasactionColumnFirst table th:first-child {display:none}
   }
 }
 </style>

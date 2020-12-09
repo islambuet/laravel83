@@ -65,7 +65,7 @@ export var labels={
     },   
     label_action:{
         en:"Action",
-        bn:"ক্রিয়া"
+        bn:"অ্যাকশন"
     },      
     label_num_tasks:{
         en:"No. of tasks",
