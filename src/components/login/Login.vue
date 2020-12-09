@@ -102,7 +102,7 @@ export default {
                         }
                         else
                         {
-                            this.alert_message = this.$system_functions.get_msg_response_error();
+                            this.$system_functions.responseErrorTask();//default Error
                         }
                         
                         this.$system_variables.status_data_loaded = 1;
@@ -110,72 +110,6 @@ export default {
                 } 
                 
             });
-            /*this.form.validateFields((err, values) => 
-            {
-                if (!err) 
-                {
-                    this.alert_message = '';
-                    this.$system_variables.status_data_loaded = 0;
-                    var form_data=new FormData(document.getElementById('form_login'));
-                    form_data.append ('token_device', this.$system_variables.user.token_device);
-                    form_data.append ('language', this.$system_variables.language);
-                    this.$axios.post('/login',form_data)
-                    .then(response=>{
-                        console.log(response.data);
-                        if(response.data.error_type == '')
-                        {
-                            localStorage.setItem('token_auth', response.data.user.token_auth);
-                            localStorage.setItem('token_csrf', response.data.user.token_csrf);
-                            localStorage.setItem('token_device', response.data.user.token_device);
-                            this.$system_functions.set_user(response.data.user);
-                            this.$router.push("/");
-                        }
-                        else if(response.data.error_type == 'USER_NOT_FOUND')
-                        {
-                            this.alert_message = this.$system_functions.get_label('USER_NOT_FOUND');
-                            this.alert_type = 'error';
-                        }
-                        else if(response.data.error_type == 'PASSWORD_INCORRECT')
-                        {
-                            this.alert_message = this.$system_functions.get_label('PASSWORD_INCORRECT') + 
-                                                    '<br/>Your account will be suspended, if you enter wrong password '+ (response.data.remaining+1) +' more time(s).';
-                            this.alert_type = 'error';
-                        }
-                        else if(response.data.error_type == 'USER_SUSPEND_PASSWORD_TRY_LIMIT_EXCEEDED')
-                        {
-                            this.alert_message = this.$system_functions.get_label('USER_SUSPEND_PASSWORD_TRY_LIMIT_EXCEEDED');
-                            this.alert_type = 'error';
-                        }
-                        else if(response.data.error_type == 'OTP_VERIFICATION_REQUIRED')
-                        {
-                            this.token_sms = response.data.token_sms;
-                            this.alert_message = this.$system_functions.get_label('OTP_VERIFICATION_REQUIRED');
-                            this.alert_type = 'success';
-                            this.otp_required = true;
-                        }
-                        else if(response.data.error_type == 'OTP_WAIT')
-                        {
-                            this.alert_message = this.$system_functions.get_label('OTP_WAIT');
-                            this.alert_type = 'success';
-                            this.otp_required = true;
-                        }
-                        else
-                        {
-                            this.alert_message = response.data.error_type;
-                            this.alert_type = 'error';
-                        }
-                        this.$system_variables.status_data_loaded = 1;
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.alert_message = this.$system_functions.get_msg_response_error();
-                        this.alert_type = 'error';
-                        this.$system_variables.status_data_loaded = 1;
-                    });
-                   
-                }
-                
-            });*/
             
         },
         

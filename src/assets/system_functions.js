@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import '@/assets/system_variables.js'
+import router from '@/router'
 var system_functions= new Vue(
 {    
     methods:{
@@ -102,7 +103,15 @@ var system_functions= new Vue(
             } 
             else if(errorStr=='UNAUTHORIZED'){
                 this.$system_variables.status_task_loaded=-2;
-            }            
+            }   
+            else if(errorStr=='LOGIN_REQUIRED'){
+                if(router.history.current.path!= '/login')
+                {
+                    router.push("/login");
+                    
+                }
+                this.$system_variables.status_task_loaded=-2;
+            }          
             else {
                 //var default_err_body='<p>'+this.get_label('msg_response_error_body')+'</p>\n\r'+'<p>'+this.get_label('msg_contact_with_admin')+'</p>'; 
                 //var default_err_body=[h('p', 'Example Text'),h('p', 'Example Text')];

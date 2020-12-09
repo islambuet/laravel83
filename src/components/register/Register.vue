@@ -121,7 +121,7 @@ export default {
                         }
                         else
                         {
-                            this.alert_message = this.$system_functions.get_msg_response_error();
+                            this.$system_functions.responseErrorTask();//default Error                            
                         }
                         
                         this.$system_variables.status_data_loaded = 1;
