@@ -33,6 +33,14 @@ export var labels={
         bn:"সাইটটি বর্তমানে অফলাইনে রয়েছে। কিছুক্ষণ অপেক্ষা করুন এবং আপনার ব্রাউজারটি রিফ্রেশ করুন, অথবা আপনি অ্যাডমিনের সাথে যোগাযোগ করুন।"
     }, 
     
+    msg_save_failed_title:{
+        en:'Failed',
+        bn:'ব্যর্থ',
+    },
+    msg_save_failed:{
+        en:'Fail to save',
+        bn:'সংরক্ষণ করতে ব্যর্থ হয়েছে',
+    },
     msg_success_title:{
         en:'Success',
         bn:'সাফল্য',

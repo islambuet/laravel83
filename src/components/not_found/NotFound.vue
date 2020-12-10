@@ -10,6 +10,8 @@ export default {
   name: "NotFound", 
   mounted:function()
   {   
+    this.$system_variables.status_task_loaded=1;  
+    this.$system_variables.status_data_loaded=1;
     console.log('404 monted');    
   },  
   

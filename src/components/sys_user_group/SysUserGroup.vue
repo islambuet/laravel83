@@ -1,26 +1,24 @@
 <template>
-  <div>
-     <div v-if="$system_variables.status_task_loaded==1">
+  <div v-if="$system_variables.status_task_loaded==1">
     <List v-if="method=='list'"/>    
-    <AddEdit v-if="(method=='add') || (method=='edit')"/>    
-    </div>
+    <AddEdit v-if="(method=='add') || (method=='edit')"/>  
+    <Role v-if="method=='role'"/>   
   </div>
-  
-  
 </template>
 
 <script>
 import List from './List.vue'
 import AddEdit from './AddEdit.vue'
+import Role from './Role.vue'
 export default {
-    name: 'SysModuleTask',
+    name: 'SysUserGroup',
     components: {
-        List,AddEdit   
+        List,AddEdit,Role   
     },
     mounted:function()
     {
       this.$system_functions.load_task_languages([
-            {language:this.$system_variables.language,file:'components/sys_module_task/language.js'},
+            {language:this.$system_variables.language,file:'components/sys_user_group/language.js'},
         ]);
       this.init();        
     },
@@ -31,10 +29,10 @@ export default {
         columns:{hidden_columns:[],control_columns:[],filter_columns:{},display_columns:[]},
         items:[],
         types:[],
-        item:{},        
-        default_item:{id:0,name_en:"",name_bn:"",type:"MODULE",parent:"0",controller:'',ordering:99,status:'Active',status_notification:'No'},
-        max_level:0,
-        reload_items:true
+        item:{},   
+        modules_tasks:{'max_level':1,'tree':[]}, 
+        module_task_max_action:9,
+        default_item:{id:0,name:"",status:'Active',ordering:99},        
       }
     },
     watch: {
@@ -46,21 +44,26 @@ export default {
     routing:function(route)
     {
       this.getItems();//items should be initialized becuase its needed in others methods
-      if(route.path=='/sys_module_task')
+      if(route.path=='/sys_user_group')
       {
         this.method='list';       
         //this.get_items();
       }
-      else if(route.path=="/sys_module_task/add")
+      else if(route.path=="/sys_user_group/add")
       {
         this.method='add';
         this.addEdit(0);
       }
       //console.log(route);
-      else if(route.path.indexOf("/sys_module_task/edit/")!=-1)
+      else if(route.path.indexOf("/sys_user_group/edit/")!=-1)
       {
         this.method='edit';        
         this.addEdit(route.params['item_id']);        
+      }
+      else if(route.path.indexOf("/sys_user_group/role/")!=-1)
+      {
+        this.method='role';        
+        this.role(route.params['item_id']);        
       }
     },
     init:function()
@@ -68,12 +71,12 @@ export default {
         this.$system_variables.status_task_loaded=0;  
         this.$system_variables.status_data_loaded=1;  
         this.reload_items=true;
-        this.$axios.get('/sys_module_task')
+        this.$axios.get('/sys_user_group')
         .then(response=>{
             if(response.data.errorStr=='')        
             {
-              this.permissions=response.data.permissions;
-              this.types=response.data.types;
+              this.permissions=response.data.permissions; 
+              this.modules_tasks=response.data.modules_tasks;             
               this.$system_variables.status_task_loaded=1;
               this.routing(this.$route);
             }
@@ -82,12 +85,12 @@ export default {
                 
             }        
         })
-        .catch(error => {              
+        .catch(error => {  
+            this.alert_type = 'error';
             if(error.response && error.response.data && error.response.data.errorStr)
             {
                  this.$system_functions.responseErrorTask(error.response.data.errorStr);
             }
-            else
             {
               this.$system_variables.status_data_loaded = 1;
               this.$system_variables.status_task_loaded=-1;
@@ -109,23 +112,34 @@ export default {
       });
       this.columns.display_columns.push({
         title: this.$system_functions.get_label('label_id'),        
-        dataIndex: 'id',                    
+        dataIndex: 'id',
+        sorter: (a, b) => a.id - b.id,                    
         width: 20,
       });
       this.columns.display_columns.push({
-        title: this.$system_functions.get_label_task('label_type'),        
-        dataIndex: 'type',                    
+        title: this.$system_functions.get_label_task('label_num_tasks'),        
+        dataIndex: 'num_tasks',
+        sorter: (a, b) => a.num_tasks - b.num_tasks,                    
         width: 20,
       });
-      for(var level=0;level<=this.max_level;level++)
-      {
-        this.columns.display_columns.push({
+      this.columns.display_columns.push({
           title: this.$system_functions.get_label('label_name'),        
-          dataIndex: 'name_'+level,                    
+          dataIndex: 'name', 
+          sorter: (a, b) => a.name.localeCompare(b.name),                   
           width: 100,
         });
-                    
-      }
+      this.columns.display_columns.push({
+        title: this.$system_functions.get_label('label_ordering'),        
+        dataIndex: 'ordering',
+        sorter: (a, b) => a.id - b.id,                     
+        width: 20,
+      });
+        this.columns.display_columns.push({
+        title: this.$system_functions.get_label('label_status'),        
+        dataIndex: 'status',
+        sorter: (a, b) => a.status.localeCompare(b.status),                        
+        width: 100,
+      });
 
     },
     getItems:function()
@@ -133,15 +147,14 @@ export default {
       if(this.reload_items)
       {
         this.$system_variables.status_data_loaded=0;        
-        this.$axios.get('sys_module_task/get_items')
+        this.$axios.get('sys_user_group/get_items')
         .then(response=>{          
         this.$system_variables.status_data_loaded=1;
             if(response.data.errorStr=='')
-            {                   
-                this.max_level=response.data.modules_tasks.max_level;                    
+            {                  
                 //this.setFilterColumns();
                 this.setDisplayColumns();
-                this.items=response.data.modules_tasks.tree;                                                           
+                this.items=response.data.items;                                                                           
                 this.reload_items=false;
             }       
         })
@@ -164,8 +177,7 @@ export default {
       if(item_id>0)
       {
         if(!(this.permissions.action_2))
-        {
-          
+        { 
           this.$system_variables.status_task_loaded=-2;
         }
         else
@@ -173,23 +185,17 @@ export default {
           var item_found=false;
           for(var i=0;i<this.items.length;i++)
           {
-            if(this.items[i].module_task.id==item_id)
+            if(this.items[i].id==item_id)
             {
-              this.item.id=this.items[i].module_task.id;
-              this.item.name_en=this.items[i].module_task.name_en;
-              this.item.name_bn=this.items[i].module_task.name_bn;
-              this.item.type=this.items[i].module_task.type;
-              this.item.parent=this.items[i].module_task.parent;
-              this.item.controller=this.items[i].module_task.controller;
-              this.item.ordering=this.items[i].module_task.ordering;
-              this.item.status=this.items[i].module_task.status;
+              //this.item={};
+              Object.assign(this.item, this.items[i]);
               item_found=true;
               break;
             }
           }
           if(!item_found)
           {
-            this.$router.push("/sys_module_task");            
+            this.$router.push("/sys_user_group");            
           }
         }
       }
@@ -201,11 +207,37 @@ export default {
         }
         else
         { 
-          this.item={};//need to reset       
+          //this.item={};//need to reset       
           Object.assign(this.item, this.default_item);          
         }        
       } 
        
+    },
+    role:function(item_id)
+    {
+      
+        if(!(this.permissions.action_2))
+        { 
+          this.$system_variables.status_task_loaded=-2;
+        }
+        else
+        {
+          var item_found=false;
+          for(var i=0;i<this.items.length;i++)
+          {
+            if(this.items[i].id==item_id)
+            {
+              
+              Object.assign(this.item, this.items[i]);              
+              item_found=true;
+              break;
+            }
+          }
+          if(!item_found)
+          {
+            this.$router.push("/sys_user_group");            
+          }
+        }
     },
     
   }

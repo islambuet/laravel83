@@ -101,6 +101,7 @@ export default {
   .mb-2{
     margin-bottom: 2px;;
   }
+  .ant-table td { white-space: nowrap; }
 
 
   @media (max-width:991px){

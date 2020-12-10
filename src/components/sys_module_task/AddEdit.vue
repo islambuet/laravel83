@@ -59,16 +59,7 @@ export default {
   name: 'AddEdit',
   mounted:function()
   {  
-    //this.item={};
-    this.item.id=this.$parent.item.id;   
-    this.item.name_en=this.$parent.item.name_en;   
-    this.item.name_bn=this.$parent.item.name_bn;   
-    this.item.parent=this.$parent.item.parent;   
-    this.item.controller=this.$parent.item.controller;   
-    this.item.ordering=this.$parent.item.ordering;   
-    this.item.status=this.$parent.item.status;   
-    //console.log(this.item);   
-    //this.item.name_en='testasdfasdf';
+    Object.assign(this.item, this.$parent.item); 
   },  
   computed:{   
     getParents:function(){ 
@@ -122,7 +113,11 @@ export default {
                         });
                     if(save_and_new)
                     {
-                      this.$router.push("/sys_module_task/add");
+                      Object.assign(this.item, this.$parent.default_item);
+                      if(this.$route.path!="/sys_module_task/add")
+                      {
+                        this.$router.push("/sys_module_task/add");
+                      }     
                     }
                     else
                     {

@@ -6,7 +6,7 @@
         <a-button type="primary" :class="'mr-2 mb-2'" v-if="$parent.permissions.action_0" @click="$parent.init">{{$system_functions.get_label('button_refresh')}}</a-button>
       </a-card>
       <a-card>
-        <a-table :columns="$parent.columns.display_columns" :data-source="modifiedItems" bordered :pagination="false" :class="'hasactionColumnFirst'">
+        <a-table :columns="$parent.columns.display_columns" :data-source="modifiedItems" bordered :pagination="false" :class="'hasactionColumnFirst'" :scroll="{x:true}">
           <template slot="action" slot-scope="text, record">
             <router-link :to="'/sys_module_task/edit/'+record.id" :class="'text-primary'" ><a-icon type="edit" theme="filled" :style="{  color: '#00ff00' }"/></router-link>
           </template>
@@ -37,6 +37,7 @@ export default {
       {
         var item={};
         item.id=this.$parent.items[i].module_task.id;
+        item.type=this.$parent.items[i].module_task.type;
         item['name_0']=this.$parent.items[i].module_task['name_'+((this.$system_variables.language=='en')?'bn':'en')]; 
         for(var level=1;level<=this.$parent.max_level;level++)
         {
