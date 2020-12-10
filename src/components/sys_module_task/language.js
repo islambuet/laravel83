@@ -15,4 +15,20 @@ export var labels={
         en:"Icon class",
         bn:"আইকন এর ক্লাস"
     }, 
+    label_controller:{
+        en:"Controller",
+        bn:"Controller"
+    }, 
+    label_ordering:{
+        en:"Ordering",
+        bn:"Ordering"
+    }, 
+    label_type:{
+        en:"Type",
+        bn:"Type"
+    }, 
+    label_parent:{
+        en:"Parent",
+        bn:"Parent"
+    }, 
 }

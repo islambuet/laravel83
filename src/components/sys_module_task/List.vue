@@ -1,5 +1,4 @@
-<template>
-  
+<template>  
     <div v-if="$parent.permissions.action_0" v-show="$system_variables.status_data_loaded==1">
       <a-card :class="'d-print-none'">
         <router-link to="/sys_module_task/add" :class="'ant-btn ant-btn-primary ant-btn-md mr-2 mb-2'">{{$system_functions.get_label('button_new')}}</router-link>  

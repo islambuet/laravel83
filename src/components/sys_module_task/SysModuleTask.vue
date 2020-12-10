@@ -1,8 +1,8 @@
 <template>
   <div>
      <div v-if="$system_variables.status_task_loaded==1">
-    <List v-show="method=='list'"/>    
-    <AddEdit v-show="method=='add' || method=='edit'"/>    
+    <List v-if="method=='list'"/>    
+    <AddEdit v-if="(method=='add') || (method=='edit')"/>    
     </div>
   </div>
   
@@ -20,7 +20,7 @@ export default {
     mounted:function()
     {
       this.$system_functions.load_task_languages([
-            {language:this.$system_variables.language,file:'components/register/language.js'},
+            {language:this.$system_variables.language,file:'components/sys_module_task/language.js'},
         ]);
       this.init();        
     },
@@ -32,7 +32,7 @@ export default {
         items:[],
         types:[],
         item:{},        
-        default_item:{id:0,name_en:"",name_bn:"",type:"",parent:'',controller:'',ordering:99,status:'Active',status_notification:''},
+        default_item:{id:0,name_en:"",name_bn:"",type:"MODULE",parent:"0",controller:'',ordering:99,status:'Active',status_notification:'No'},
         max_level:0,
         reload_items:true
       }
@@ -48,19 +48,20 @@ export default {
       this.getItems();//items should be initialized becuase its needed in others methods
       if(route.path=='/sys_module_task')
       {
-        this.method='list';
+        this.method='list';       
         //this.get_items();
       }
-      /*else if(route.path=="/sys_module_task/add")
+      else if(route.path=="/sys_module_task/add")
       {
         this.method='add';
-        this.add_edit(0);
+        this.addEdit(0);
       }
+      //console.log(route);
       else if(route.path.indexOf("/sys_module_task/edit/")!=-1)
       {
         this.method='edit';        
-        this.add_edit(route.params['item_id']);        
-      }*/
+        this.addEdit(route.params['item_id']);        
+      }
     },
     init:function()
     { 
@@ -124,82 +125,72 @@ export default {
     },
     getItems:function()
     {
-        if(this.reload_items)
-        {
-            this.$system_variables.status_data_loaded=0;        
-            this.$axios.get('sys_module_task/get_items')
-            .then(response=>{          
-            this.$system_variables.status_data_loaded=1;
-                if(response.data.errorStr=='')
-                {                   
-                    this.max_level=response.data.modules_tasks.max_level;                    
-                    //this.setFilterColumns();
-                    this.setDisplayColumns();
-                    this.items=response.data.modules_tasks.tree;                                                           
-                    this.reload_items=false;
-                }       
-            })
-            .catch(error => {   
-              console.log(error);
-                if(error.response && error.response.data && error.response.data.errorStr)
-                {
-                    this.$system_functions.responseErrorTask(error.response.data.errorStr);
-                }
-                else
-                {
-                  this.$system_functions.responseErrorTask();//default Error
-                }
-                
-                this.$system_variables.status_data_loaded = 1;
-            });
-        }
+      if(this.reload_items)
+      {
+        this.$system_variables.status_data_loaded=0;        
+        this.$axios.get('sys_module_task/get_items')
+        .then(response=>{          
+        this.$system_variables.status_data_loaded=1;
+            if(response.data.errorStr=='')
+            {                   
+                this.max_level=response.data.modules_tasks.max_level;                    
+                //this.setFilterColumns();
+                this.setDisplayColumns();
+                this.items=response.data.modules_tasks.tree;                                                           
+                this.reload_items=false;
+            }       
+        })
+        .catch(error => { 
+            if(error.response && error.response.data && error.response.data.errorStr)
+            {
+                this.$system_functions.responseErrorTask(error.response.data.errorStr);
+            }
+            else
+            {
+              this.$system_functions.responseErrorTask();//default Error
+            }
+            
+            this.$system_variables.status_data_loaded = 1;
+        });
+      }
     },
     addEdit:function(item_id)
     {
       if(item_id>0)
       {
-        if(!(this.permissions.action2))
+        if(!(this.permissions.action_2))
         {
           
           this.$system_variables.status_task_loaded=-2;
         }
         else
         {
-          this.$system_variables.status_data_loaded=0;        
-          var form_data=new FormData();
-          form_data.append ('token_auth', this.$system_variables.user.token_auth);                  
-          form_data.append ('item_id', item_id);
-          this.$axios.post('/sys_module_task/get_item',form_data)
-          .then(response=>{          
-            this.$system_variables.status_data_loaded=1;
-            if(response.data.error_type)        
-            {            
-              this.$bvToast.toast(this.$system_variables.get_label(response.data.error_type), {title: this.$system_variables.get_label('label_error'),variant:'danger',autoHideDelay: 5000,appendToast: false});
-              this.$router.push("/sys_module_task");
-            }
-            else
+          var item_found=false;
+          for(var i=0;i<this.items.length;i++)
+          {
+            if(this.items[i].module_task.id==item_id)
             {
-              if(response.data.item)  
-              {
-                this.item=response.data.item; 
-              }
-              else
-              {
-                this.$bvToast.toast(this.$system_variables.get_label('Data Not Found'), {title: this.$system_variables.get_label('label_error'),variant:'danger',autoHideDelay: 5000,appendToast: false});
-                this.$router.push("/sys_module_task");
-              }
-            }        
-          })
-          .catch(error => {   
-            this.$system_variables.status_data_loaded=1;
-            this.$bvToast.toast(this.$system_variables.get_label("Response Error"), {title: this.$system_variables.get_label('label_error'),variant:'danger',autoHideDelay: 5000,appendToast: false});  
+              this.item.id=this.items[i].module_task.id;
+              this.item.name_en=this.items[i].module_task.name_en;
+              this.item.name_bn=this.items[i].module_task.name_bn;
+              this.item.type=this.items[i].module_task.type;
+              this.item.parent=this.items[i].module_task.parent;
+              this.item.controller=this.items[i].module_task.controller;
+              this.item.ordering=this.items[i].module_task.ordering;
+              this.item.status=this.items[i].module_task.status;
+              item_found=true;
+              break;
+            }
+          }
+          if(!item_found)
+          {
             this.$router.push("/sys_module_task");            
-          });
+          }
         }
       }
       else
       {
-        if(!(this.permissions.action1))
+        if(!(this.permissions.action_1))
         {
           this.$system_variables.status_task_loaded=-2;
         }

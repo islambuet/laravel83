@@ -1,110 +1,77 @@
 <template>
-  <div>
-    <div v-if="$parent.permissions.action1 || $parent.permissions.action2" v-show="$system_variables.status_data_loaded==1">
-        <div class="card d-print-none mb-2">
-            <div class="card-body">
-              <router-link  to="/sys_module_task" :class="'btn btn-success mr-2 mb-2'" >{{$system_variables.get_label('button_back')}}</router-link>
+    <div v-if="$parent.permissions.action_1 || $parent.permissions.action_2" v-show="$system_variables.status_data_loaded==1">
+        <a-card :class="'d-print-none'">
+            <router-link to="/sys_module_task" :class="'ant-btn ant-btn-primary ant-btn-md mr-2 mb-2'">{{$system_functions.get_label('button_back')}}</router-link> 
+            <a-button type="primary" :class="'mr-2 mb-2'" @click="save(false)">{{$system_functions.get_label('button_save')}}</a-button> 
+            <a-button type="primary" :class="'mr-2 mb-2'" @click="save(true)">{{$system_functions.get_label('button_save_new')}}</a-button>
+        </a-card>
+        <a-card :title="$parent.item.id>0?'Edit ::'+$parent.item['name_'+$system_variables.language]:$system_functions.get_label_task('label_sys_module_task_new')">
+          <a-col :lg="{ span: 11, offset: 7 }" :sm="{ span: 13, offset: 5 }"> 
+            <a-alert v-if="alert_message != ''"            
+                :type="alert_type"
+                closable
+                >
+                <p slot="description" v-html="alert_message">
+                </p>
+            </a-alert>             
+            <a-form-model ref="formSave" id="formSave" :model="item" :rules="ItemRules" :label-col="{ span: 8 }" :wrapper-col="{ span: 14 }">
+              <input type="hidden" name="id" :value="item.id"/>
+                <a-form-model-item has-feedback :label="$system_functions.get_label_task('label_name_en')" prop="name_en">
+                  <a-input name='name_en' v-model="item.name_en"/>
+                </a-form-model-item>
+                <a-form-model-item has-feedback :label="$system_functions.get_label_task('label_name_bn')" prop="name_bn">
+                  <a-input name='name_bn' v-model="item.name_bn"/>
+                </a-form-model-item>
+                <a-form-model-item :label="$system_functions.get_label_task('label_parent')">
+                  <select class="ant-input" name="parent" v-model="item.parent">
+                    <option value="0">Main Menu</option>
+                    <option :value="parent.value" v-for="parent in getParents" :key="parent.value">{{parent.text}}</option>                                   
+                  </select>           
+                </a-form-model-item>
+
+                <a-form-model-item :label="$system_functions.get_label_task('label_type')">
+                  <select class="ant-input" name="type" v-model="item.type">
+                    <option :value="type" v-for="type in $parent.types" :key="type">{{type}}</option>                                   
+                  </select>        
+                </a-form-model-item>
                 
-                <b-button class="mr-2 mb-2" variant="success" @click="save(false)">{{$system_variables.get_label('button_save')}}</b-button>
-                <b-button class="mr-2 mb-2" variant="success" @click="save(true)">{{$system_variables.get_label('button_save_new')}}</b-button>
-            </div>
-        </div>  
-        <div class="card d-print-none mb-2">
-          <div class="card-header">
-            <div v-if="$parent.item.id>0">Edit ::{{$parent.item['name_'+$system_variables.language]}}</div>
-            <div v-else>{{$system_variables.get_label('label_sys_module_task_new')}}</div>
-          </div>
-          <div class="card-body">
-            <form id="form_save">
-              <input type="hidden" name="item_id" :value="$parent.item.id">
-              <b-row class="mb-2">
-                <b-col cols="4" class="text-right"><label>{{$system_variables.get_label('label_name_en')}}</label></b-col>
-                <b-col cols="8" sm="4">
-                  <input type="text" name="item[name_en]" v-model="$parent.item.name_en" class="form-control" />
-                </b-col>                
-              </b-row>
-              <b-row class="mb-2">
-                <b-col cols="4" class="text-right"><label>{{$system_variables.get_label('label_name_bn')}}</label></b-col>
-                <b-col cols="8" sm="4">
-                  <input type="text" name="item[name_bn]" v-model="$parent.item.name_bn" class="form-control" />
-                </b-col>                
-              </b-row>
-              <b-row class="mb-2">
-                <b-col cols="4" class="text-right"><label>{{$system_variables.get_label_task('label_icon_class')}}</label> </b-col>
-                <b-col cols="8" sm="4">
-                  <input type="text" name="item[icon_class]" v-model="$parent.item.icon_class" class="form-control" />
-                </b-col>                
-              </b-row>
-              <b-row class="mb-2">
-                <b-col cols="4" class="text-right"><label>{{$system_variables.get_label('label_type')}}</label></b-col>
-                <b-col cols="8" sm="4">
-                  <select class="form-control" v-model="$parent.item.type" name="item[type]" >
-                        <option value="">{{$system_variables.get_label('Label_select')}}</option>
-                        <option v-for="(option, index) in $parent.types" :key="index" :value="option">
-                            {{ option}}
-                        </option>
-                    </select>
-                </b-col>                
-              </b-row>
-              <b-row class="mb-2">
-                <b-col cols="4" class="text-right"><label>{{$system_variables.get_label('label_parent')}}</label></b-col>
-                <b-col cols="8" sm="4">
-                  <select class="form-control" v-model="$parent.item.parent" name="item[parent]" >
-                        <option value="0">{{$system_variables.get_label('Label_select')}}</option>
-                        <option v-for="(option, index) in get_parents" :key="index" :value="option.value">
-                            {{ option.text}}
-                        </option>
-                    </select>
-                </b-col>                
-              </b-row>
-              <b-row class="mb-2">
-                <b-col cols="4" class="text-right"><label>{{$system_variables.get_label('label_controller_name')}}</label></b-col>
-                <b-col cols="8" sm="4">
-                  <input type="text" name="item[controller]" v-model="$parent.item.controller" class="form-control" />
-                </b-col>                
-              </b-row>
-              <b-row class="mb-2">
-                <b-col cols="4" class="text-right"><label>{{$system_variables.get_label('label_ordering')}}</label></b-col>
-                <b-col cols="8" sm="4">
-                  <input type="number" name="item[ordering]" v-model="$parent.item.ordering" class="form-control" />
-                </b-col>                
-              </b-row>
-              <b-row class="mb-2">
-                <b-col cols="4" class="text-right"><label>{{$system_variables.get_label('label_status')}}</label></b-col>
-                <b-col cols="8" sm="4">
-                  <select class="form-control" v-model="$parent.item.status" name="item[status]" >                        
-                        <option v-for="(option, index) in ['Active','In-Active']" :key="index" :value="option">
-                            {{ option}}
-                        </option>
-                    </select>
-                </b-col>                              
-              </b-row>
-              <b-row class="mb-2">
-                <b-col cols="4" class="text-right"><label>{{$system_variables.get_label('label_status_notification')}}</label></b-col>
-                <b-col cols="8" sm="4">
-                  <select class="form-control" v-model="$parent.item.status_notification" name="item[status_notification]" >                        
-                        <option v-for="(option, index) in ['Yes','No']" :key="index" :value="option">
-                            {{ option}}
-                        </option>
-                    </select>
-                </b-col>                
-              </b-row>
-              </form>
-          </div>          
-        </div> 
-        
+
+                <a-form-model-item :label="$system_functions.get_label_task('label_controller')">
+                  <a-input name='controller' v-model="item.controller"/>
+                </a-form-model-item>
+                <a-form-model-item :label="$system_functions.get_label_task('label_ordering')">
+                  <a-input name='ordering' v-model="item.ordering"/>
+                </a-form-model-item>
+                <a-form-model-item :label="$system_functions.get_label('label_status')" prop="status">
+                  <select class="ant-input" name="status" v-model="item.status">
+                    <option value="Active">Active</option>
+                    <option value="In-Active">In-Active</option>                    
+                  </select>                  
+                </a-form-model-item>
+              </a-form-model>
+          </a-col>
+        </a-card>
     </div>
-  </div>
 </template>
 
 <script>
 export default {
   name: 'AddEdit',
   mounted:function()
-  {    
+  {  
+    //this.item={};
+    this.item.id=this.$parent.item.id;   
+    this.item.name_en=this.$parent.item.name_en;   
+    this.item.name_bn=this.$parent.item.name_bn;   
+    this.item.parent=this.$parent.item.parent;   
+    this.item.controller=this.$parent.item.controller;   
+    this.item.ordering=this.$parent.item.ordering;   
+    this.item.status=this.$parent.item.status;   
+    //console.log(this.item);   
+    //this.item.name_en='testasdfasdf';
   },  
   computed:{   
-    get_parents:function(){ 
+    getParents:function(){ 
       var temp_items=[];  
       for(var i=0;i<this.$parent.items.length;i++)
       {
@@ -117,11 +84,88 @@ export default {
 
     }
   },
+  data() {
+        return {                        
+            alert_message: '',
+            alert_type:'error', 
+            item:{id:0,name_en:"",name_bn:"",type:"MODULE",parent:"0",controller:'',ordering:99,status:'Active',status_notification:'No'},           
+            ItemRules: {
+                name_en: [{ required: true, message: "Name (English) Requied)", trigger: 'blur' }],
+                name_bn: [{ required: true, message: "Name(Bangla) Required", trigger: 'blur' }],               
+                status: [{ required: true, message: "status Required", trigger: 'blur' }],               
+            }
+
+            // form_title: 'Fill out the form below to login.',
+            // otp_error_message: ''
+        }
+    },
   methods:{
     
     save:function(save_and_new)
     {
-      this.$system_variables.status_data_loaded=0; 
+      this.$refs.formSave.validate(valid => {
+      if (valid) 
+      {   
+          this.alert_message = '';
+          this.$system_variables.status_data_loaded = 0;
+          var formData=this.$system_functions.getFormData(new FormData(document.getElementById('formSave')));                
+          this.$axios.post('sys_module_task/save_item',formData)
+              .then(response=>{                        
+                  this.$system_variables.status_data_loaded = 1;
+                  if(response.data.errorStr == '')
+                  {
+                    this.$parent.reload_items=true;
+                          this.$notification.success({
+                          message: this.$system_functions.get_label('msg_success_title'),                    
+                          duration:10,
+                          description:this.$system_functions.get_label('msg_success_saved')
+                        });
+                    if(save_and_new)
+                    {
+                      this.$router.push("/sys_module_task/add");
+                    }
+                    else
+                    {
+                      this.$router.push("/sys_module_task");
+                    }                     
+                  }
+                  else
+                  {
+                      this.alert_message = response.data.errorStr;
+                      this.alert_type = 'error';
+                  }
+                  this.$system_variables.status_data_loaded = 1;
+              })
+              .catch(error => {
+                console.log(error);
+                  this.alert_type = 'error';            
+                  if(error.response && error.response.data && error.response.data.errorStr)
+                  {
+                      if(error.response.data.errorStr == 'VALIDATION_FAILED')
+                      {
+                          for (var err in error.response.data.errors) {
+                              this.alert_message+=error.response.data.errors[err][0]+'<br>';
+                              }
+                      }
+                      else if(error.response.data.errorStr == 'SAVE_FAILED')
+                      {
+                          this.alert_message+=error.response.data.message;
+                      }
+                      else
+                      {
+                          this.$system_functions.responseErrorTask(error.response.data.errorStr);                                
+                      }
+                  }
+                  else
+                  {
+                      this.$system_functions.responseErrorTask();//default Error
+                  }
+                  this.$system_variables.status_data_loaded = 1;
+              });                
+          } 
+          
+      });
+      /*this.$system_variables.status_data_loaded=0; 
       var form_data=new FormData(document.getElementById('form_save'));       
       form_data.append ('token_auth', this.$system_variables.user.token_auth); 
       this.$axios.post('/sys_module_task/save_item',form_data)
@@ -129,13 +173,13 @@ export default {
         this.$system_variables.status_data_loaded=1;
         if(response.data.error_type)        
         {            
-          this.$bvToast.toast(this.$system_variables.get_label(response.data.error_type), {title: this.$system_variables.get_label('label_error'),variant:'danger',autoHideDelay: 5000,appendToast: false});
+          this.$bvToast.toast(this.$system_functions.get_label(response.data.error_type), {title: this.$system_functions.get_label('label_error'),variant:'danger',autoHideDelay: 5000,appendToast: false});
         }
         else
         {
             this.$parent.reload_items=true;
             this.$system_variables.status_data_loaded=1;
-            this.$bvToast.toast(this.$system_variables.get_label("Saved SuccessFully"), {title: this.$system_variables.get_label('label_Success'),variant:'Success',autoHideDelay: 5000,appendToast: false});              
+            this.$bvToast.toast(this.$system_functions.get_label("Saved SuccessFully"), {title: this.$system_functions.get_label('label_Success'),variant:'Success',autoHideDelay: 5000,appendToast: false});              
             if(save_and_new)
             {
               this.$router.push("/sys_module_task/add");
@@ -148,8 +192,8 @@ export default {
       })
       .catch(error => {   
         this.$system_variables.status_data_loaded=1;
-        this.$bvToast.toast(this.$system_variables.get_label("Response Error"), {title: this.$system_variables.get_label('label_error'),variant:'danger',autoHideDelay: 5000,appendToast: false});   
-      });                 
+        this.$bvToast.toast(this.$system_functions.get_label("Response Error"), {title: this.$system_functions.get_label('label_error'),variant:'danger',autoHideDelay: 5000,appendToast: false});   
+      });   */              
           
           
       /*this.$systemVariables.statusSaving=1;        
