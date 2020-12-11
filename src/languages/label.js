@@ -51,6 +51,14 @@ export var labels={
         en:"Name",
         bn:"নাম"
     }, 
+    label_name_en:{
+        en:"Name",
+        bn:"Name"
+    }, 
+    label_name_bn:{
+        en:"নাম",
+        bn:"নাম"
+    },
     label_ordering:{
         en:"Ordering",
         bn:"ক্রম"
