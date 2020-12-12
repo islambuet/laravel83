@@ -142,7 +142,13 @@ export default {
       this.columns.display_columns.push({
         title: this.$system_functions.get_label('label_created_at'),        
         dataIndex: 'created_at', 
-        sorter: (a, b) => a.name_bn.localeCompare(b.name_bn),                   
+        customRender:function(text, record, index){
+                        var secs=Date.parse(text);
+                         var date = new Date(secs);
+                        return date.toLocaleString();
+                        },
+        
+        sorter: function(a, b){return (Date.parse(a.created_at)-Date.parse(b.created_at))},                   
         width: 100,
       });   
       this.columns.display_columns.push({

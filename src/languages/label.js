@@ -107,4 +107,8 @@ export var labels={
         en:"Controller name",
         bn:"কন্ট্রোলার এর নাম"
     },   
+    label_created_at:{
+        en:"Creation Time",
+        bn:"তৈরির তারিখ"
+    },   
 }

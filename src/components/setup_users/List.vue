@@ -16,7 +16,7 @@
                 <a-icon type="edit" theme="filled" :style="{  color: '#00ff00' }"/>
               </a-tooltip>            
             </router-link>            
-          </template>
+          </template>          
         </a-table>    
       </a-card>
   </div>
