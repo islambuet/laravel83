@@ -26,6 +26,7 @@ export default {
         method:'list',        
         permissions:{'action_0':0},
         columns:{hidden_columns:[],control_columns:[],filter_columns:{},display_columns:[]},
+        pagination:{total:0,showSizeChanger:true,pageSizeOptions:['5','10','25','100','500'],showQuickJumper:true,pageSize:5,current:1,onChange:this.onpaginationChange,onShowSizeChange:this.onpaginationChange},//current_page,items_per_page to avoid confilct
         items:[],
         types:[],
         item:{},  
@@ -157,12 +158,14 @@ export default {
       if(this.reload_items)
       {
         this.$system_variables.status_data_loaded=0;        
-        this.$axios.get(this.controler_url+'/get_items')
+        this.$axios.get(this.controler_url+'/get_items',{params:{page:this.pagination.current,per_page:this.pagination.pageSize}})
         .then(response=>{          
         this.$system_variables.status_data_loaded=1;
             if(response.data.errorStr=='')
             {   
                 this.items=response.data.items;                                                                           
+                this.pagination.total=response.data.total;                                                                           
+
                 this.reload_items=false;
             }       
         })
@@ -179,6 +182,13 @@ export default {
             this.$system_variables.status_data_loaded = 1;
         });
       }
+    },
+    onpaginationChange:function(current, pageSize)
+    {
+      this.pagination.current=current;
+      this.pagination.pageSize=pageSize;
+      this.reload_items=true;    
+      this.getItems();
     },
     addEdit:function(item_id)
     {

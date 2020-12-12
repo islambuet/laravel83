@@ -6,7 +6,7 @@
         <a-button type="primary" :class="'mr-2 mb-2'" v-if="$parent.permissions.action_0" @click="$parent.init">{{$system_functions.get_label('button_refresh')}}</a-button>
       </a-card>
       <a-card>
-        <a-table :columns="$parent.columns.display_columns" :data-source="modifiedItems" bordered :pagination="false" :class="'hasactionColumnFirst'" :scroll="{x:true}">
+        <a-table :columns="$parent.columns.display_columns" :data-source="modifiedItems" bordered :pagination="$parent.pagination" :class="'hasactionColumnFirst'" :scroll="{x:true}">
           <template slot="action" slot-scope="text, record">
             <router-link :to="'/'+$parent.controler_url+'/edit/'+record.id" :class="'text-primary'" >
               <a-tooltip placement="top">
