@@ -98,6 +98,18 @@ export default {
     },
     setFilterColumns:function()
     {
+      var columns={};
+      columns.id_from="";
+      columns.id_to="";
+      columns.name_en="";
+      columns.name_bn="";
+      columns.mobile_no="";
+      columns.email="";
+      columns.status="";
+      
+      this.columns.filter_columns=columns;
+      //this.columns.filter_columns.push({'name_en':'shaifu'});
+      
     },
     setDisplayColumns:function()
     {
@@ -111,31 +123,51 @@ export default {
       this.columns.display_columns.push({
         title: this.$system_functions.get_label('label_id'),        
         dataIndex: 'id',
-        sorter: (a, b) => a.id - b.id,                    
+        sorter: (a, b) => a.id - b.id,  
+        scopedSlots: {
+            filterDropdown: 'filter_id',
+            filterIcon: 'searchIcon',
+          },                  
         width: 20,
       });
       this.columns.display_columns.push({
         title: this.$system_functions.get_label('label_name_en'),        
         dataIndex: 'name_en',
-        sorter: (a, b) => a.name_en.localeCompare(b.name_en),                    
+        sorter: (a, b) => a.name_en.localeCompare(b.name_en),  
+        scopedSlots: {
+            filterDropdown: 'filter_name_en',
+            filterIcon: 'searchIcon',
+          },                  
         width: 100,
       });
       this.columns.display_columns.push({
         title: this.$system_functions.get_label('label_name_bn'),        
         dataIndex: 'name_bn', 
-        sorter: (a, b) => a.name_bn.localeCompare(b.name_bn),                   
+        sorter: (a, b) => a.name_bn.localeCompare(b.name_bn),  
+         scopedSlots: {
+            filterDropdown: 'filter_name_bn',
+            filterIcon: 'searchIcon',
+          },                    
         width: 100,
       });    
       this.columns.display_columns.push({
         title: this.$system_functions.get_label_task('label_mobile_no'),        
         dataIndex: 'mobile_no',
-        sorter: (a, b) => a.mobile_no.localeCompare(b.mobile_no),                    
+        sorter: (a, b) => a.mobile_no.localeCompare(b.mobile_no),   
+        scopedSlots: {
+            filterDropdown: 'filter_mobile_no',
+            filterIcon: 'searchIcon',
+          },                  
         width: 50,
       });
       this.columns.display_columns.push({
         title: this.$system_functions.get_label_task('label_email'),        
         dataIndex: 'email',
-        sorter: (a, b) => a.email.localeCompare(b.email),                    
+        sorter: (a, b) => a.email.localeCompare(b.email),  
+        scopedSlots: {
+            filterDropdown: 'filter_email',
+            filterIcon: 'searchIcon',
+          },                   
         width: 100,
       });
       
@@ -147,14 +179,18 @@ export default {
                          var date = new Date(secs);
                         return date.toLocaleString();
                         },
-        
-        sorter: function(a, b){return (Date.parse(a.created_at)-Date.parse(b.created_at))},                   
+        //scopedSlots: { customRender: 'created_at' },
+        sorter: function(a, b){return (Date.parse(a.created_at)-Date.parse(b.created_at))},                       
         width: 100,
       });   
       this.columns.display_columns.push({
         title: this.$system_functions.get_label('label_status'),        
         dataIndex: 'status',
-        sorter: (a, b) => a.status.localeCompare(b.status),                        
+        sorter: (a, b) => a.status.localeCompare(b.status), 
+         scopedSlots: {
+            filterDropdown: 'filter_status',
+            filterIcon: 'searchIcon',
+          },                           
         width: 100,
       });
 
