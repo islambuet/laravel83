@@ -9,6 +9,9 @@ const routes = [
   { path: '/sys_module_task', component: () => import('@/components/sys_module_task/SysModuleTask.vue'),children:[{path: 'add'},{path: 'edit/:item_id'}]},
   { path: '/sys_user_group', component: () => import('@/components/sys_user_group/SysUserGroup.vue'),children:[{path: 'add'},{path: 'edit/:item_id'},{path: 'role/:item_id'}]},
   { path: '/setup_users', component: () => import('@/components/setup_users/SetupUsers.vue'),children:[{path: 'add'},{path: 'edit/:item_id'}]},
+
+  { path: '/stripedemo', name: 'StripeDemo', component: () => import('@/components/stripedemo/StripeDemo.vue') },  
+
   { path: '*',name:'NotFound',component: function () {return import('@/components/not_found/NotFound.vue')}}
 ]
 
