@@ -1,11 +1,11 @@
 <template>  
   <a-row>
-    <a-col :lg="{ span: 11, offset: 7 }" :sm="{ span: 13, offset: 5 }"> 
-      <div id="card-element" :style="{border:'1px solid',padding:'1em',marginBottom:'1em'}" >Card Info will behere</div>
+    <a-col :lg="{ span: 11, offset: 7 }" :sm="{ span: 13, offset: 5 }" v-show="!stripInfo.success"> 
+      <div  id="card-element" :style="{border:'1px solid',padding:'1em',marginBottom:'1em'}" >Card Info will behere</div>
       <div id="payment-request-button">payment button will be here</div>
       <!-- <div id="iban-element" :style="{border:'1px solid',padding:'1em',marginBottom:'1em'}" ></div> -->
       <a-alert v-if="alert_message != ''" :type="alert_type" closable :style="{marginBottom:'1em'}"><p slot="description" v-html="alert_message"></p></a-alert> 
-      <a-button type="primary" :class="'mr-2 mb-2'" @click="goStripe">Pay $10.99</a-button> 
+      <a-button v-if="!stripInfo.success" type="primary" :class="'mr-2 mb-2'" @click="goStripe">Pay $10.99</a-button> 
       <div id="payment-request-button"></div>
       <div>
         Example card: 4242424242424242
@@ -16,6 +16,10 @@
         <br>
         For More testing go here <a target="_blank" href="https://stripe.com/docs/testing">https://stripe.com/docs/testing</a>                
       </div>
+    </a-col>
+    <a-col :lg="{ span: 11, offset: 7 }" :sm="{ span: 13, offset: 5 }" v-show="stripInfo.success"> 
+      Payment Sucessfull.
+      <a-button type="primary" :class="'mr-2 mb-2'" @click="init">Try Again</a-button> 
     </a-col>
   </a-row>
 </template>
@@ -58,7 +62,7 @@ export default {
       alert_message: '',
       alert_type:'error',
       value: '',
-      stripInfo:{stripe:'',elements:'',card:'',paymentIntent:''},
+      stripInfo:{stripe:'',elements:'',card:'',paymentIntent:'',success:false},
       STRIPE_PUBLISHABLE_KEY:'pk_test_51HrA8aC7Qt33rDM6vyYTk64F4Y1r8hpngc8GaupEse4OYEqMiqcPp8TMLZUfnjyNxAgB2so4P6Tla6UWoybnjJzf00LWtigRgg',      
       
     }
@@ -66,6 +70,7 @@ export default {
   methods: {  
     init:async function()
     {
+      this.stripInfo.success=false;
       this.stripInfo.stripe = Stripe( this.STRIPE_PUBLISHABLE_KEY );      
       this.stripInfo.elements = this.stripInfo.stripe.elements();
       //this.card = this.elements.create('card');
@@ -102,10 +107,11 @@ export default {
         }
         else
         {
-          console.log('show success');
+          this.stripInfo.success=true;
+          //console.log('show success');
         }
-        console.log(response);
-            return;
+        //console.log(response);
+            
     
       
     },
