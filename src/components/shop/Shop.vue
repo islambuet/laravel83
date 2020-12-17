@@ -5,7 +5,7 @@
         <a-card :style="{padding:'10px',textAlign:'center'}">
           <div style="height:250px">
             <img v-if="item.pictures.length==1" alt="comming soon" :src="item.pictures[0].picture" style="max-height: 100%; max-width:100%"/>             
-            <a-carousel arrows :dots="false" v-else>
+            <a-carousel arrows :dots="false" v-else :autoplay="true">
               <div slot="prevArrow" slot-scope="props" class="custom-slick-arrow" style="left: 10px;zIndex: 1">
                 <a-icon type="left-circle" />
               </div>
@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       controler_url:'shop',
-      pagination:{total:0,pageSizeOptions:['9','27','25','100','500'],showQuickJumper:true,pageSize:9,current:1},//current_page,items_per_page to avoid confilct
+      pagination:{total:0,pageSizeOptions:['9','27','54','108','540'],showQuickJumper:true,pageSize:9,current:1},//current_page,items_per_page to avoid confilct
       items:[],
       value: '',
       
