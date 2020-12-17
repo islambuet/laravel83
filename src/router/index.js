@@ -10,6 +10,7 @@ const routes = [
   { path: '/sys_user_group', component: () => import('@/components/sys_user_group/SysUserGroup.vue'),children:[{path: 'add'},{path: 'edit/:item_id'},{path: 'role/:item_id'}]},
   { path: '/setup_users', component: () => import('@/components/setup_users/SetupUsers.vue'),children:[{path: 'add'},{path: 'edit/:item_id'}]},
 
+  { path: '/shop', name: 'Shop', component: () => import('@/components/shop/Shop.vue') },  
   { path: '/stripedemo', name: 'StripeDemo', component: () => import('@/components/stripedemo/StripeDemo.vue') },  
 
   { path: '*',name:'NotFound',component: function () {return import('@/components/not_found/NotFound.vue')}}
