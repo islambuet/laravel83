@@ -4,6 +4,7 @@ import router from '@/router'
 function initial_data()
 {
   var language=localStorage.getItem('language')? localStorage.getItem('language'):'en';
+  var shoping_cart=localStorage.getItem('shoping_cart')? JSON.parse(localStorage.getItem('shoping_cart')):{count:0,items:{}};
   return {   
     language:language,
     user:{
@@ -18,7 +19,8 @@ function initial_data()
     },
     visitor:{
       tasks:[]
-    }, 
+    },
+    shoping_cart:shoping_cart, 
     status_task_loaded:0,    //Loading=0,success=1,failed=-1,acceesdenied=-2,siteoffline=-3  for all page
     status_data_loaded:0,    //Loading=0,loaded=1
     labels:{},

@@ -6,10 +6,10 @@
           <div style="height:250px">
             <img v-if="item.pictures.length==1" alt="comming soon" :src="item.pictures[0].picture" style="max-height: 100%; max-width:100%"/>             
             <a-carousel arrows :dots="false" v-else :autoplay="true">
-              <div slot="prevArrow" slot-scope="props" class="custom-slick-arrow" style="left: 10px;zIndex: 1">
+              <div slot="prevArrow" class="custom-slick-arrow" style="left: 10px;zIndex: 1">
                 <a-icon type="left-circle" />
               </div>
-              <div slot="nextArrow" slot-scope="props" class="custom-slick-arrow" style="right: 10px">
+              <div slot="nextArrow" class="custom-slick-arrow" style="right: 10px">
                 <a-icon type="right-circle" />
               </div>              
               <img v-for="(picture,pindex) in item.pictures" :key="item.id+'_'+pindex" :src="picture.picture" :style="{width:'auto'}"/>                
@@ -18,7 +18,7 @@
           
           <h2>{{item.name}}</h2>          
           <h4>{{item.price}}</h4>
-          <a-input-search type='number' style="max-width: 200px;text-align:right" :id="'item_'+item.id" enter-button="Add To Cart" :value="0"/>
+          <a-input-search type='number' style="max-width: 200px;text-align:right" :id="'quantity_'+item.id" :enter-button="'Add To Cart'" :value="getQuantity(item.id)" @search="addToCart(item)"/>
           
         </a-card>
       </a-col>
@@ -100,6 +100,39 @@ export default {
           }          
       });
     },
+    getQuantity:function(id)
+    {
+      var cart_items=this.$system_variables.shoping_cart.items;
+      if(cart_items[id])
+      {
+        return cart_items[id].quantity;
+      }
+      else
+      {
+        return 0;
+      }
+
+    },
+    addToCart:function(item)
+    {
+      var cart_items=this.$system_variables.shoping_cart.items;
+      var quantity=document.getElementById('quantity_'+item.id).value;      
+      if(quantity>0)
+      {
+        //add/update
+        item.quantity=quantity;
+        cart_items[item.id]=item;
+        
+      }
+      else
+      {
+        delete cart_items[item.id];
+      }
+      this.$system_variables.shoping_cart.count=Object.keys(cart_items).length;
+      this.$system_variables.shoping_cart.items=cart_items;
+      localStorage.setItem('shoping_cart', JSON.stringify(this.$system_variables.shoping_cart));
+      
+    }
     
     
   },
